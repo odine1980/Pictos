@@ -271,6 +271,20 @@
             display: none;
         }
 
+        .sticky-letter {
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            padding: 8px 18px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
         .pictos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -909,27 +923,31 @@
                 `;
             }
 
-            // Render base game sections grouped by letter
+            // Render base game as one big alphabetical list with sticky letter headers
             const baseVisible = PICTOS_DATA.base.filter(p => shouldShow(p, 'base'));
             if (baseVisible.length > 0) {
+                const baseCollected = baseVisible.filter(p => collected.has(p.name)).length;
                 const groups = groupByLetter(baseVisible);
                 const sortedLetters = Object.keys(groups).sort();
 
+                let baseGridHtml = '';
                 sortedLetters.forEach(letter => {
                     const pictos = groups[letter];
-                    const letterCollected = pictos.filter(p => collected.has(p.name)).length;
-                    container.innerHTML += `
-                        <div class="section" id="section-${letter}">
-                            <div class="section-header" onclick="toggleSection('section-${letter}')">
-                                <h2>${letter} <span class="count">${letterCollected}/${pictos.length}</span></h2>
-                                <span class="toggle-icon">▼</span>
-                            </div>
-                            <div class="pictos-grid">
-                                ${pictos.map(p => renderPictoItem(p, 'base')).join('')}
-                            </div>
-                        </div>
-                    `;
+                    baseGridHtml += `<div class="sticky-letter">${letter}</div>`;
+                    baseGridHtml += pictos.map(p => renderPictoItem(p, 'base')).join('');
                 });
+
+                container.innerHTML += `
+                    <div class="section" id="section-base">
+                        <div class="section-header" onclick="toggleSection('section-base')">
+                            <h2>🎮 Base Game Pictos <span class="count">${baseCollected}/${baseVisible.length}</span></h2>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="pictos-grid">
+                            ${baseGridHtml}
+                        </div>
+                    </div>
+                `;
             }
 
             // Show empty state if nothing visible
