@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pictos Tracker - Clair Obscur: Expedition 33</title>
+    <style>
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --accent: #e94560;
+            --accent-hover: #ff6b6b;
+            --text-primary: #eee;
+            --text-secondary: #aaa;
+            --text-muted: #666;
+            --border: #2a2a4a;
+            --success: #4ecca3;
+            --warning: #f4d03f;
+            --danger: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border-radius: 16px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .filter-btn:hover:not(.active) {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .sections {
+            display: grid;
+            gap: 24px;
+        }
+
+        .section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px 24px;
+            background: linear-gradient(90deg, var(--bg-card), var(--bg-secondary));
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header .count {
+            background: var(--accent);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .section-header .toggle-icon {
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .section.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .section.collapsed .pictos-grid {
+            display: none;
+        }
+
+        .pictos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1px;
+            background: var(--border);
+        }
+
+        .picto-item {
+            background: var(--bg-secondary);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .picto-item:hover {
+            background: var(--bg-card);
+        }
+
+        .picto-item.collected {
+            background: rgba(78, 204, 163, 0.08);
+        }
+
+        .picto-item.collected .picto-name {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .picto-item.missable {
+            border-left: 3px solid var(--warning);
+        }
+
+        .picto-item.dlc {
+            border-left: 3px solid var(--accent);
+        }
+
+        .picto-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .picto-item.collected .picto-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .picto-checkbox svg {
+            width: 14px;
+            height: 14px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .picto-item.collected .picto-checkbox svg {
+            opacity: 1;
+        }
+
+        .picto-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .picto-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .picto-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .picto-badges {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-missable {
+            background: rgba(244, 208, 63, 0.15);
+            color: var(--warning);
+        }
+
+        .badge-dlc {
+            background: rgba(233, 69, 96, 0.15);
+            color: var(--accent);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .pictos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Pictos Tracker</h1>
+            <p>Clair Obscur: Expedition 33 — Keep track of your Pictos collection</p>
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="collected-count">0</div>
+                    <div class="stat-label">Collected</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="total-count">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="remaining-count">0</div>
+                    <div class="stat-label">Remaining</div>
+                </div>
+                <div class="stat" style="min-width: 200px;">
+                    <div class="stat-value" id="percent-count">0%</div>
+                    <div class="stat-label">Complete</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search Pictos by name...">
+            </div>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="missing">Missing</button>
+                <button class="filter-btn" data-filter="collected">Collected</button>
+                <button class="filter-btn" data-filter="missable">Missable</button>
+                <button class="filter-btn" data-filter="dlc">DLC</button>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary" id="export-btn">Export</button>
+                <button class="btn btn-secondary" id="import-btn">Import</button>
+                <button class="btn btn-danger" id="reset-btn">Reset</button>
+            </div>
+        </div>
+
+        <div class="sections" id="sections-container"></div>
+
+        <footer>
+            <p>Data sourced from <a href="https://expedition33.wiki.fextralife.com/Pictos" target="_blank">Fextralife Wiki</a> and <a href="https://game-checklists.com/expedition33/all-pictos.html" target="_blank">Game Checklists</a></p>
+            <p style="margin-top: 8px;">Progress is saved automatically to your browser's local storage</p>
+        </footer>
+    </div>
+
+    <script>
+        // Pictos data
+        const PICTOS_DATA = {
+            missable: [
+                { name: "Exposing Attack", location: "Flying Waters — Noco's Hut merchant (3,600 Chroma, fight required)" },
+                { name: "Auto Powerful", location: "Floating Cemetery — defeat Chalier Nevron and agree to fulfill their final wish" }
+            ],
+            dlc: [
+                { name: "Alternating Critical", location: "Verso's Drafts — Candy Land entrance via blue tunnel", effect: "On Critical hit, +100% damage on next non-Critical hit", cost: 10 },
+                { name: "AP Discount", location: "Verso's Drafts — Reverie Path Flag merchant (217,000 Chroma)", effect: "Skills cost 1 less AP", cost: 30 },
+                { name: "Clea's Death", location: "Endless Tower — defeat Clea Unleashed", effect: "On death, allies gain +25% damage until they die", cost: 15 },
+                { name: "Consuming Attack", location: "Verso's Drafts — Reverie Path Flag merchant (130,200 Chroma)", effect: "Base attack consumes up to 100 Burns for +10% damage per Burn", cost: 10 },
+                { name: "Damage Share", location: "Verso's Drafts — Near lake with jumping rings, defeat two Licornes", effect: "50% damage redirected to other allies", cost: 30 },
+                { name: "Double Third", location: "Verso's Drafts — Open Playground Flag, defeat enemy group on cliff below", effect: "Every third Skill hit deals double damage", cost: 10 },
+                { name: "Empowered Healer", location: "Verso's Drafts — Twisted Woods, right path, Parkour challenge", effect: "Healing Skill gives +50% damage for 1 turn", cost: 10 },
+                { name: "Empowering Jumps", location: "Verso's Drafts — Complete Seesaw challenge", effect: "Counters deal +100% damage per successful Jump Counter this turn", cost: 5 },
+                { name: "Feint", location: "Verso's Drafts — Gestral Carousel, talk to NPC, parry his attacks", effect: "Start with 4 Barbapapa stacks; every 5th Skill hit deals +600% damage", cost: 15 },
+                { name: "First Life", location: "Endless Tower — defeat Chromatic Lampmaster", effect: "+25% damage until death; -20% on death (Once)", cost: 15 },
+                { name: "Frenzy", location: "Verso's Drafts — Licornapieds Station Flag, defeat Licornapieds boss", effect: "Each successive Skill hit deals +10% damage", cost: 20 },
+                { name: "Gradient Overcharge", location: "Verso's Drafts — Reverie Path Flag, left end of parkour challenge", effect: "Consume 3 Gradient Charges on turn start for +200% damage this turn", cost: 15 },
+                { name: "Gradient Parry", location: "Verso's Drafts — Twisted Woods, right path, climb ledge past enemy", effect: "+5% Gradient charge on Parry", cost: 10 },
+                { name: "Longer Break", location: "Verso's Drafts — Open Playground Flag, defeat enemy group on cliff below", effect: "Breaks last 1 more turn; target can't be Broken twice", cost: 10 },
+                { name: "SOS Healing Tint", location: "Verso's Drafts — Near lake with jumping rings, defeat Franctale", effect: "Consume Healing Tint when falling below 50% Health", cost: 10 },
+                { name: "Slowing Attack", location: "Verso's Drafts — Gestral Baths Flag, ledge in Gestral Baths", effect: "Base attack applies Slow for 1 turn", cost: 10 },
+                { name: "Trigger-Happy", location: "Verso's Drafts — Defeat Gestral balloon miniboss", effect: "After 10 shots in same turn, +2 AP (once); following Shots deal +200%", cost: 20 }
+            ],
+            base: [
+                // A
+                { name: "Accelerating Heal", location: "The Continent — beach camp north of Flying Casino" },
+                { name: "Accelerating Last Stand", location: "Hidden Gestral Arena — 2nd challenge" },
+                { name: "Accelerating Shots", location: "Flying Manor — Central Plaza merchant (89,650 Chroma, fight)" },
+                { name: "Accelerating Tint", location: "Endless Night Sanctuary — Night Totem merchant (80,040 Chroma)" },
+                { name: "Aegis Revival", location: "Spring Meadows / Renoir's Drafts — Entrance merchant past grapple (117,240 Chroma)" },
+                { name: "Anti-Blight", location: "The Reacher — hot air balloon merchant (67,350 Chroma)" },
+                { name: "Anti-Burn", location: "Frozen Hearts — defeat Gargant; or Flying Manor Gargant later" },
+                { name: "Anti-Charm", location: "Sirene — defeat Tisseur" },
+                { name: "Anti-Freeze", location: "Frozen Hearts — Paint Cage 12" },
+                { name: "Anti-Stun", location: "The Continent — defeat Chromatic Pétank east of Flying Casino" },
+                { name: "At Death's Door", location: "Stone Wave Cliffs — defeat Lampmaster" },
+                { name: "Attack Lifesteal", location: "Ancient Sanctuary — defeat Sakapatate in dark alley" },
+                { name: "Augmented Aim", location: "Flying Waters — climb large anchor at Noco's Hut" },
+                { name: "Augmented Attack", location: "Spring Meadows — defeat Chromatic Lancelier" },
+                { name: "Augmented Counter I", location: "Flying Waters — Burgeon" },
+                { name: "Augmented Counter II", location: "Visages — Chromatic Ramasseur" },
+                { name: "Augmented Counter III", location: "Frozen Hearts — Danseuse Teacher / Lumiere Act III" },
+                { name: "Augmented First Strike", location: "Esquie's Nest — Francois / Renoir's Drafts" },
+                { name: "Auto Death", location: "Yellow Harvest — merchant (5,320 Chroma)" },
+                { name: "Auto Regen", location: "Sirene" },
+                { name: "Auto Rush", location: "Old Lumiere — Maelle/Verso side" },
+                { name: "Auto Shell", location: "Stone Wave Cliffs" },
+                // B
+                { name: "Base Shield", location: "The Chosen Path — defeat all bosses" },
+                { name: "Beneficial Contamination", location: "Falling Leaves — merchant (48,200 Chroma)" },
+                { name: "Break Specialist", location: "Flying Manor — merchant (81,500 Chroma, fight)" },
+                { name: "Breaker", location: "Ancient Sanctuary — Ultimate Sakapatate" },
+                { name: "Breaking Attack", location: "The Monolith — Clair Obscur" },
+                { name: "Breaking Burn", location: "The Continent — Bourgeon (Act II)" },
+                { name: "Breaking Counter", location: "Stone Wave Cliffs" },
+                { name: "Breaking Death", location: "The Continent (Act III)" },
+                { name: "Breaking Shots", location: "Stone Wave Cliffs / Monoco Station" },
+                { name: "Breaking Slow", location: "The Continent (Act III)" },
+                { name: "Burn Affinity", location: "Frozen Hearts — Glacial Falls Flag, foggy path" },
+                { name: "Burning Break", location: "Frozen Hearts" },
+                { name: "Burning Death", location: "The Continent (Act II) / Frozen Hearts / Flying Manor" },
+                { name: "Burning Mark", location: "Ancient Sanctuary" },
+                { name: "Burning Shots", location: "Spring Meadows / Sacred River" },
+                // C
+                { name: "Charging Alteration", location: "Flying Manor" },
+                { name: "Charging Attack", location: "The Reacher" },
+                { name: "Charging Burn", location: "Renoir's Drafts — destroyed bridge near merchant" },
+                { name: "Charging Counter", location: "The Reacher" },
+                { name: "Charging Critical", location: "Endless Tower / Renoir's Drafts" },
+                { name: "Charging Mark", location: "Endless Night Sanctuary" },
+                { name: "Charging Stun", location: "Lumiere" },
+                { name: "Charging Tint", location: "The Continent (Act II)" },
+                { name: "Charging Weakness", location: "The Reacher" },
+                { name: "Cheater", location: "The Continent (Act II — Sprong)" },
+                { name: "Clea's Life", location: "Flying Manor" },
+                { name: "Cleansing Tint", location: "Spring Meadows / The Monolith" },
+                { name: "Combo Attack I", location: "Forgotten Battlefield" },
+                { name: "Combo Attack II", location: "The Monolith (Act III)" },
+                { name: "Combo Attack III", location: "Dark Gestral Arena" },
+                { name: "Confident", location: "Stone Wave Cliffs / The Continent (multiple)" },
+                { name: "Confident Fighter", location: "Visages" },
+                { name: "Critical Break", location: "The Continent (Act II — TM)" },
+                { name: "Critical Burn", location: "Spring Meadows / Endless Night Sanctuary" },
+                { name: "Critical Moment", location: "Gestral Village" },
+                { name: "Critical Stun", location: "Sacred River" },
+                { name: "Critical Vulnerability", location: "The Continent (Act II — TM)" },
+                { name: "Critical Weakness", location: "Endless Tower" },
+                // D
+                { name: "Dead Energy I", location: "The Continent (Act II — FB)" },
+                { name: "Dead Energy II", location: "Spring Meadows" },
+                { name: "Death Bomb", location: "Yellow Harvest" },
+                { name: "Defensive Mode", location: "Stone Wave Cliffs" },
+                { name: "Dodger", location: "Spring Meadows" },
+                { name: "Double Burn", location: "Visages / Sacred River" },
+                { name: "Double Mark", location: "Sirene" },
+                { name: "Draining Cleanse", location: "The Reacher" },
+                // E
+                { name: "Effective Heal", location: "Sirene" },
+                { name: "Effective Support", location: "The Continent (Act III)" },
+                { name: "Empowering Attack", location: "Spring Meadows / Sacred River" },
+                { name: "Empowering Break", location: "Flying Manor" },
+                { name: "Empowering Dodge", location: "The Continent (Act III)" },
+                { name: "Empowering Last Stand", location: "Multiple locations" },
+                { name: "Empowering Parry", location: "Multiple locations" },
+                { name: "Empowering Tint", location: "Multiple locations" },
+                { name: "Energetic Healer", location: "Flying Manor" },
+                { name: "Energising Attack I", location: "Yellow Harvest / Renoir's Drafts" },
+                { name: "Energising Attack II", location: "Sirene / Holy River & Renoir's Drafts shops" },
+                { name: "Energising Break", location: "Flying Waters" },
+                { name: "Energising Burn", location: "Frozen Hearts" },
+                { name: "Energising Cleanse", location: "The Monolith" },
+                { name: "Energising Death", location: "The Continent (Act III) / Forgotten Battlefield" },
+                { name: "Energising Gradient", location: "Frost Évêque, northeast of Forgotten Battlefield" },
+                { name: "Energising Heal", location: "The Continent" },
+                { name: "Energising Jump", location: "Old Sanctuary" },
+                { name: "Energising Pain", location: "Stone Wave Cliffs" },
+                { name: "Energising Parry", location: "Chromatic Luster / Holy River & Renoir's Drafts" },
+                { name: "Energising Powerful", location: "Endless Tower L2 / southeast continent / Lumiere" },
+                { name: "Energising Revive", location: "Chromatic Hexga, Stonewave Cliffs Cave" },
+                { name: "Energising Rush", location: "Endless Tower" },
+                { name: "Energising Shell", location: "The Continent" },
+                { name: "Energising Shots", location: "Flying Manor" },
+                { name: "Energising Start I", location: "Behind ruined crates under arch; requires Esquie" },
+                { name: "Energising Start II", location: "Ancient Sanctuary" },
+                { name: "Energising Start III", location: "Esquie's Nest" },
+                { name: "Energising Start IV", location: "Forgotten Battlefield" },
+                { name: "Energising Stun", location: "Flying Manor" },
+                { name: "Energising Turn", location: "Sirene / Holy River & Renoir's Drafts shops" },
+                { name: "Energy Master", location: "The Continent (Act II)" },
+                { name: "Enfeebling Attack", location: "The Monolith" },
+                { name: "Enfeebling Mark", location: "Stone Wave Cliffs" },
+                { name: "Exhausting Power", location: "Multiple locations" },
+                { name: "Exposing Break", location: "Multiple locations" },
+                // F
+                { name: "Faster Than Strong", location: "Lumiere (Act III)" },
+                { name: "First Offensive", location: "Multiple locations" },
+                { name: "First Strike", location: "Stone Wave Cliffs" },
+                { name: "Fueling Break", location: "The Continent / Endless Tower Stage 7" },
+                { name: "Full Strength", location: "Multiple locations" },
+                // G
+                { name: "Glass Cannon", location: "Visages" },
+                { name: "Gradient Break", location: "Endless Night Sanctuary" },
+                { name: "Gradient Breaker", location: "Multiple locations" },
+                { name: "Gradient Fighter", location: "Lumiere (Act III)" },
+                { name: "Greater Defenceless", location: "The Monolith" },
+                { name: "Greater Powerful", location: "Sirene" },
+                { name: "Greater Powerless", location: "Endless Tower" },
+                { name: "Greater Rush", location: "Multiple locations" },
+                { name: "Greater Shell", location: "Sirene" },
+                { name: "Greater Slow", location: "Multiple locations" },
+                // H
+                { name: "Healing Boon", location: "The Reacher" },
+                { name: "Healing Counter", location: "Old Lumiere" },
+                { name: "Healing Death", location: "Old Lumiere" },
+                { name: "Healing Fire", location: "Sirene" },
+                { name: "Healing Mark", location: "Gestral Village" },
+                { name: "Healing Parry", location: "The Continent / Stone Quarry after helping Troubadour" },
+                { name: "Healing Share", location: "Visages" },
+                { name: "Healing Stun", location: "Lumiere (Act III)" },
+                { name: "Healing Tint Energy", location: "Stone Wave Cliffs" },
+                // I
+                { name: "Immaculate", location: "Visages" },
+                { name: "In Medias Res", location: "Dark Shores" },
+                { name: "Inverted Affinity", location: "Gestral Merchant, Forgotten Battlefield" },
+                // L
+                { name: "Last Stand Critical", location: "Multiple locations" },
+                { name: "Longer Burn", location: "Flying Manor" },
+                { name: "Longer Powerful", location: "Old Lumiere" },
+                { name: "Longer Rush", location: "The Continent" },
+                { name: "Longer Shell", location: "Forgotten Battlefield" },
+                // M
+                { name: "Marking Break", location: "Multiple locations" },
+                { name: "Marking Shots", location: "Flying Waters" },
+                // P
+                { name: "Painted Power", location: "Multiple locations" },
+                { name: "Painter", location: "Flying Manor" },
+                { name: "Perilous Parry", location: "Stone Wave Cliffs / Crimson Forest" },
+                { name: "Piercing Shot", location: "Ancient Sanctuary" },
+                { name: "Powered Attack", location: "Visages" },
+                { name: "Powerful Heal", location: "Multiple locations" },
+                { name: "Powerful Mark", location: "Flying Manor" },
+                { name: "Powerful Revive", location: "Multiple locations" },
+                { name: "Powerful Shield", location: "Multiple locations" },
+                { name: "Powerful Shots", location: "Gestral Village" },
+                { name: "Powerful on Shell", location: "Sirene" },
+                { name: "Pro Retreat", location: "Multiple locations" },
+                { name: "Protecting Attack", location: "Multiple locations" },
+                { name: "Protecting Death", location: "Sirene" },
+                { name: "Protecting Heal", location: "Multiple locations" },
+                { name: "Protecting Last Stand", location: "Multiple locations" },
+                { name: "Protecting Shots", location: "Flying Manor" },
+                { name: "Protecting Tint", location: "The Reacher" },
+                // Q
+                { name: "Quick Break", location: "Renoir's Drafts / Lumiere (Act III)" },
+                // R
+                { name: "Random Defense", location: "The Monolith" },
+                { name: "Recovery", location: "Multiple locations" },
+                { name: "Rejuvenating Revive", location: "Multiple locations" },
+                { name: "Revive Paradox", location: "Old Lumiere" },
+                { name: "Revive Tint Energy", location: "Forgotten Battlefield" },
+                { name: "Rewarding Mark", location: "Flying Waters / Holy River shop" },
+                { name: "Roulette", location: "Gestral Village / Flying Manor" },
+                { name: "Rush on Powerful", location: "Endless Tower / Renoir's Drafts" },
+                // S
+                { name: "SOS Power", location: "Stone Wave Cliffs" },
+                { name: "SOS Rush", location: "Multiple locations" },
+                { name: "SOS Shell", location: "Flying Waters" },
+                { name: "Second Chance", location: "The Monolith / Renoir's Drafts" },
+                { name: "Shared Care", location: "Multiple locations" },
+                { name: "Shell On Rush", location: "Multiple locations" },
+                { name: "Shield Affinity", location: "Sirene" },
+                { name: "Shielding Death", location: "Multiple locations" },
+                { name: "Shielding Tint", location: "The Continent" },
+                { name: "Shortcut", location: "Renoir's Drafts / Lumiere (Act III)" },
+                { name: "Slowing Break", location: "Flying Manor" },
+                { name: "Sniper", location: "The Reacher" },
+                { name: "Solidifying", location: "Multiple locations" },
+                { name: "Solo Fighter", location: "Renoir's Drafts" },
+                { name: "Staggering Attack", location: "Flying Waters" },
+                { name: "Stay Marked", location: "The Monolith / Flying Manor" },
+                { name: "Stun Boost", location: "Ancient Sanctuary" },
+                { name: "Survivor", location: "Multiple locations" },
+                { name: "Sweet Kill", location: "Forgotten Battlefield / Renoir's Drafts" },
+                // T
+                { name: "Tainted", location: "Multiple locations" },
+                { name: "Teamwork", location: "Yellow Harvest" },
+                { name: "The One", location: "Sunless Cliffs" },
+                { name: "Time Tint", location: "Old Lumiere / Endless Night Sanctuary" },
+                // V
+                { name: "Versatile", location: "Flying Waters / Endless Night Sanctuary" },
+                // W
+                { name: "Warming Up", location: "Multiple locations" },
+                { name: "Weakness Gain", location: "The Monolith" }
+            ]
+        };
+
+        // State
+        let collected = new Set();
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        // Load from localStorage
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('pictos-collected');
+                if (saved) {
+                    collected = new Set(JSON.parse(saved));
+                }
+            } catch (e) {
+                console.error('Failed to load state:', e);
+            }
+        }
+
+        // Save to localStorage
+        function saveState() {
+            try {
+                localStorage.setItem('pictos-collected', JSON.stringify([...collected]));
+            } catch (e) {
+                console.error('Failed to save state:', e);
+            }
+        }
+
+        // Get first letter for grouping
+        function getFirstLetter(name) {
+            return name.charAt(0).toUpperCase();
+        }
+
+        // Group pictos by first letter
+        function groupByLetter(pictos) {
+            const groups = {};
+            pictos.forEach(p => {
+                const letter = getFirstLetter(p.name);
+                if (!groups[letter]) groups[letter] = [];
+                groups[letter].push(p);
+            });
+            return groups;
+        }
+
+        // Render a picto item
+        function renderPictoItem(picto, type) {
+            const isCollected = collected.has(picto.name);
+            const classes = ['picto-item'];
+            if (isCollected) classes.push('collected');
+            if (type === 'missable') classes.push('missable');
+            if (type === 'dlc') classes.push('dlc');
+
+            const badges = [];
+            if (type === 'missable') badges.push('<span class="badge badge-missable">Missable</span>');
+            if (type === 'dlc') badges.push('<span class="badge badge-dlc">DLC</span>');
+
+            return `
+                <div class="${classes.join(' ')}" data-name="${picto.name.toLowerCase()}" data-type="${type}" onclick="togglePicto('${picto.name.replace(/'/g, "\\'")}')">
+                    <div class="picto-checkbox">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    <div class="picto-info">
+                        <div class="picto-name">${picto.name}</div>
+                        <div class="picto-meta">${picto.location}</div>
+                    </div>
+                    <div class="picto-badges">${badges.join('')}</div>
+                </div>
+            `;
+        }
+
+        // Toggle picto collected state
+        function togglePicto(name) {
+            if (collected.has(name)) {
+                collected.delete(name);
+            } else {
+                collected.add(name);
+            }
+            saveState();
+            render();
+        }
+
+        // Update stats
+        function updateStats() {
+            const total = PICTOS_DATA.missable.length + PICTOS_DATA.dlc.length + PICTOS_DATA.base.length;
+            const collectedCount = collected.size;
+            const remaining = total - collectedCount;
+            const percent = total > 0 ? Math.round((collectedCount / total) * 100) : 0;
+
+            document.getElementById('collected-count').textContent = collectedCount;
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('remaining-count').textContent = remaining;
+            document.getElementById('percent-count').textContent = percent + '%';
+            document.getElementById('progress-fill').style.width = percent + '%';
+        }
+
+        // Filter pictos
+        function shouldShow(picto, type) {
+            const isCollected = collected.has(picto.name);
+
+            // Search filter
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                if (!picto.name.toLowerCase().includes(query) &&
+                    !picto.location.toLowerCase().includes(query)) {
+                    return false;
+                }
+            }
+
+            // Type filter
+            switch (currentFilter) {
+                case 'missing':
+                    return !isCollected;
+                case 'collected':
+                    return isCollected;
+                case 'missable':
+                    return type === 'missable';
+                case 'dlc':
+                    return type === 'dlc';
+                default:
+                    return true;
+            }
+        }
+
+        // Render sections
+        function render() {
+            const container = document.getElementById('sections-container');
+            container.innerHTML = '';
+
+            // Render missable section
+            const missableVisible = PICTOS_DATA.missable.filter(p => shouldShow(p, 'missable'));
+            if (missableVisible.length > 0 || currentFilter === 'missable' || currentFilter === 'all') {
+                const missableCollected = PICTOS_DATA.missable.filter(p => collected.has(p.name)).length;
+                container.innerHTML += `
+                    <div class="section" id="section-missable">
+                        <div class="section-header" onclick="toggleSection('section-missable')">
+                            <h2>⚠️ Missable Pictos <span class="count">${missableCollected}/${PICTOS_DATA.missable.length}</span></h2>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="pictos-grid">
+                            ${missableVisible.map(p => renderPictoItem(p, 'missable')).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Render DLC section
+            const dlcVisible = PICTOS_DATA.dlc.filter(p => shouldShow(p, 'dlc'));
+            if (dlcVisible.length > 0 || currentFilter === 'dlc' || currentFilter === 'all') {
+                const dlcCollected = PICTOS_DATA.dlc.filter(p => collected.has(p.name)).length;
+                container.innerHTML += `
+                    <div class="section" id="section-dlc">
+                        <div class="section-header" onclick="toggleSection('section-dlc')">
+                            <h2>📦 DLC Pictos (Thank You Update) <span class="count">${dlcCollected}/${PICTOS_DATA.dlc.length}</span></h2>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="pictos-grid">
+                            ${dlcVisible.map(p => renderPictoItem(p, 'dlc')).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Render base game sections grouped by letter
+            const baseVisible = PICTOS_DATA.base.filter(p => shouldShow(p, 'base'));
+            if (baseVisible.length > 0) {
+                const groups = groupByLetter(baseVisible);
+                const sortedLetters = Object.keys(groups).sort();
+
+                sortedLetters.forEach(letter => {
+                    const pictos = groups[letter];
+                    const letterCollected = pictos.filter(p => collected.has(p.name)).length;
+                    container.innerHTML += `
+                        <div class="section" id="section-${letter}">
+                            <div class="section-header" onclick="toggleSection('section-${letter}')">
+                                <h2>${letter} <span class="count">${letterCollected}/${pictos.length}</span></h2>
+                                <span class="toggle-icon">▼</span>
+                            </div>
+                            <div class="pictos-grid">
+                                ${pictos.map(p => renderPictoItem(p, 'base')).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Show empty state if nothing visible
+            if (container.innerHTML === '') {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <p>No Pictos match your current filters.</p>
+                    </div>
+                `;
+            }
+
+            updateStats();
+        }
+
+        // Toggle section collapse
+        function toggleSection(id) {
+            const section = document.getElementById(id);
+            section.classList.toggle('collapsed');
+        }
+
+        // Export data
+        function exportData() {
+            const data = {
+                collected: [...collected],
+                timestamp: new Date().toISOString(),
+                version: 1
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'pictos-tracker-backup.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Import data
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if (data.collected && Array.isArray(data.collected)) {
+                            collected = new Set(data.collected);
+                            saveState();
+                            render();
+                            alert('Progress imported successfully!');
+                        } else {
+                            alert('Invalid backup file format.');
+                        }
+                    } catch (err) {
+                        alert('Failed to parse backup file.');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Reset all progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                collected.clear();
+                saveState();
+                render();
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            render();
+
+            // Search
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                render();
+            });
+
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    render();
+                });
+            });
+
+            // Action buttons
+            document.getElementById('export-btn').addEventListener('click', exportData);
+            document.getElementById('import-btn').addEventListener('click', importData);
+            document.getElementById('reset-btn').addEventListener('click', resetProgress);
+        });
+    </script>
+</body>
+</html>
