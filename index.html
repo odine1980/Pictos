@@ -889,18 +889,28 @@
             const container = document.getElementById('sections-container');
             container.innerHTML = '';
 
-            // Render missable section
-            const missableVisible = PICTOS_DATA.missable.filter(p => shouldShow(p, 'missable'));
-            if (missableVisible.length > 0 || currentFilter === 'missable' || currentFilter === 'all') {
-                const missableCollected = PICTOS_DATA.missable.filter(p => collected.has(p.name)).length;
+            // Render base game as one big alphabetical list with sticky letter headers
+            const baseVisible = PICTOS_DATA.base.filter(p => shouldShow(p, 'base'));
+            if (baseVisible.length > 0 || currentFilter === 'all') {
+                const baseCollected = baseVisible.filter(p => collected.has(p.name)).length;
+                const groups = groupByLetter(baseVisible);
+                const sortedLetters = Object.keys(groups).sort();
+
+                let baseGridHtml = '';
+                sortedLetters.forEach(letter => {
+                    const pictos = groups[letter];
+                    baseGridHtml += `<div class="sticky-letter">${letter}</div>`;
+                    baseGridHtml += pictos.map(p => renderPictoItem(p, 'base')).join('');
+                });
+
                 container.innerHTML += `
-                    <div class="section" id="section-missable">
-                        <div class="section-header" onclick="toggleSection('section-missable')">
-                            <h2>⚠️ Missable Pictos <span class="count">${missableCollected}/${PICTOS_DATA.missable.length}</span></h2>
+                    <div class="section" id="section-base">
+                        <div class="section-header" onclick="toggleSection('section-base')">
+                            <h2>🎮 Base Game Pictos <span class="count">${baseCollected}/${baseVisible.length}</span></h2>
                             <span class="toggle-icon">▼</span>
                         </div>
                         <div class="pictos-grid">
-                            ${missableVisible.map(p => renderPictoItem(p, 'missable')).join('')}
+                            ${baseGridHtml}
                         </div>
                     </div>
                 `;
@@ -923,28 +933,18 @@
                 `;
             }
 
-            // Render base game as one big alphabetical list with sticky letter headers
-            const baseVisible = PICTOS_DATA.base.filter(p => shouldShow(p, 'base'));
-            if (baseVisible.length > 0) {
-                const baseCollected = baseVisible.filter(p => collected.has(p.name)).length;
-                const groups = groupByLetter(baseVisible);
-                const sortedLetters = Object.keys(groups).sort();
-
-                let baseGridHtml = '';
-                sortedLetters.forEach(letter => {
-                    const pictos = groups[letter];
-                    baseGridHtml += `<div class="sticky-letter">${letter}</div>`;
-                    baseGridHtml += pictos.map(p => renderPictoItem(p, 'base')).join('');
-                });
-
+            // Render missable section
+            const missableVisible = PICTOS_DATA.missable.filter(p => shouldShow(p, 'missable'));
+            if (missableVisible.length > 0 || currentFilter === 'missable' || currentFilter === 'all') {
+                const missableCollected = PICTOS_DATA.missable.filter(p => collected.has(p.name)).length;
                 container.innerHTML += `
-                    <div class="section" id="section-base">
-                        <div class="section-header" onclick="toggleSection('section-base')">
-                            <h2>🎮 Base Game Pictos <span class="count">${baseCollected}/${baseVisible.length}</span></h2>
+                    <div class="section" id="section-missable">
+                        <div class="section-header" onclick="toggleSection('section-missable')">
+                            <h2>⚠️ Missable Pictos <span class="count">${missableCollected}/${PICTOS_DATA.missable.length}</span></h2>
                             <span class="toggle-icon">▼</span>
                         </div>
                         <div class="pictos-grid">
-                            ${baseGridHtml}
+                            ${missableVisible.map(p => renderPictoItem(p, 'missable')).join('')}
                         </div>
                     </div>
                 `;
