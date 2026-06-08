@@ -271,20 +271,6 @@
             display: none;
         }
 
-        .sticky-letter {
-            position: sticky;
-            top: 0;
-            background: var(--bg-card);
-            padding: 8px 18px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: var(--accent);
-            border-bottom: 1px solid var(--border);
-            z-index: 10;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
         .pictos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -899,7 +885,6 @@
                 let baseGridHtml = '';
                 sortedLetters.forEach(letter => {
                     const pictos = groups[letter];
-                    baseGridHtml += `<div class="sticky-letter">${letter}</div>`;
                     baseGridHtml += pictos.map(p => renderPictoItem(p, 'base')).join('');
                 });
 
@@ -1029,6 +1014,14 @@
         // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
             loadState();
+
+            // If user has collected at least one pictos, default to showing missing only
+            if (collected.size > 0) {
+                currentFilter = 'missing';
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('.filter-btn[data-filter="missing"]').classList.add('active');
+            }
+
             render();
 
             // Search
