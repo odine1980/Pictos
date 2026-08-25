@@ -282,7 +282,7 @@
             background: var(--bg-secondary);
             padding: 14px 18px;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
             cursor: pointer;
             transition: all 0.15s;
@@ -320,6 +320,7 @@
             justify-content: center;
             flex-shrink: 0;
             transition: all 0.2s;
+            margin-top: 2px;
         }
 
         .picto-item.collected .picto-checkbox {
@@ -365,6 +366,18 @@
             text-overflow: ellipsis;
         }
 
+        .picto-effect {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 3px;
+            line-height: 1.35;
+        }
+
+        .picto-item.collected .picto-effect {
+            color: var(--text-muted);
+        }
+
         .picto-badges {
             display: flex;
             gap: 4px;
@@ -387,6 +400,11 @@
         .badge-dlc {
             background: rgba(233, 69, 96, 0.15);
             color: var(--accent);
+        }
+
+        .badge-cost {
+            background: rgba(78, 204, 163, 0.12);
+            color: var(--success);
         }
 
         .hidden {
@@ -514,8 +532,8 @@
         // Pictos data
         const PICTOS_DATA = {
             missable: [
-                { name: "Exposing Attack", location: "Flying Waters — Noco's Hut merchant (3,600 Chroma, fight required)" },
-                { name: "Auto Powerful", location: "Floating Cemetery — defeat Chalier Nevron and agree to fulfill their final wish" }
+                { name: "Exposing Attack", location: "Flying Waters — Noco's Hut merchant (3,600 Chroma, fight required)", effect: "Base Attack applies Defenceless for 1 turn", cost: 10 },
+                { name: "Auto Powerful", location: "Floating Cemetery — defeat Chalier Nevron and agree to fulfill their final wish", effect: "Apply Powerful for 3 turns on battle start", cost: 10 }
             ],
             dlc: [
                 { name: "Alternating Critical", location: "Verso's Drafts — Candy Land entrance via blue tunnel", effect: "On Critical hit, +100% damage on next non-Critical hit", cost: 10 },
@@ -537,215 +555,197 @@
                 { name: "Trigger-Happy", location: "Verso's Drafts — Defeat Gestral balloon miniboss", effect: "After 10 shots in same turn, +2 AP (once); following Shots deal +200%", cost: 20 }
             ],
             base: [
-                // A
-                { name: "Accelerating Heal", location: "The Continent — beach camp north of Flying Casino" },
-                { name: "Accelerating Last Stand", location: "Hidden Gestral Arena — 2nd challenge" },
-                { name: "Accelerating Shots", location: "Flying Manor — Central Plaza merchant (89,650 Chroma, fight)" },
-                { name: "Accelerating Tint", location: "Endless Night Sanctuary — Night Totem merchant (80,040 Chroma)" },
-                { name: "Aegis Revival", location: "Spring Meadows / Renoir's Drafts — Entrance merchant past grapple (117,240 Chroma)" },
-                { name: "Anti-Blight", location: "The Reacher — hot air balloon merchant (67,350 Chroma)" },
-                { name: "Anti-Burn", location: "Frozen Hearts — defeat Gargant; or Flying Manor Gargant later" },
-                { name: "Anti-Charm", location: "Sirene — defeat Tisseur" },
-                { name: "Anti-Freeze", location: "Frozen Hearts — Paint Cage 12" },
-                { name: "Anti-Stun", location: "The Continent — defeat Chromatic Pétank east of Flying Casino" },
-                { name: "At Death's Door", location: "Stone Wave Cliffs — defeat Lampmaster" },
-                { name: "Attack Lifesteal", location: "Ancient Sanctuary — defeat Sakapatate in dark alley" },
-                { name: "Augmented Aim", location: "Flying Waters — climb large anchor at Noco's Hut" },
-                { name: "Augmented Attack", location: "Spring Meadows — defeat Chromatic Lancelier" },
-                { name: "Augmented Counter I", location: "Flying Waters — Burgeon" },
-                { name: "Augmented Counter II", location: "Visages — Chromatic Ramasseur" },
-                { name: "Augmented Counter III", location: "Frozen Hearts — Danseuse Teacher / Lumiere Act III" },
-                { name: "Augmented First Strike", location: "Esquie's Nest — Francois / Renoir's Drafts" },
-                { name: "Auto Death", location: "Yellow Harvest — merchant (5,320 Chroma)" },
-                { name: "Auto Regen", location: "Sirene" },
-                { name: "Auto Rush", location: "Old Lumiere — Maelle/Verso side" },
-                { name: "Auto Shell", location: "Stone Wave Cliffs" },
-                // B
-                { name: "Base Shield", location: "The Chosen Path — defeat all bosses" },
-                { name: "Beneficial Contamination", location: "Falling Leaves — merchant (48,200 Chroma)" },
-                { name: "Break Specialist", location: "Flying Manor — merchant (81,500 Chroma, fight)" },
-                { name: "Breaker", location: "Ancient Sanctuary — Ultimate Sakapatate" },
-                { name: "Breaking Attack", location: "The Monolith — Clair Obscur" },
-                { name: "Breaking Burn", location: "The Continent — Bourgeon (Act II)" },
-                { name: "Breaking Counter", location: "Stone Wave Cliffs" },
-                { name: "Breaking Death", location: "The Continent (Act III)" },
-                { name: "Breaking Shots", location: "Stone Wave Cliffs / Monoco Station" },
-                { name: "Breaking Slow", location: "The Continent (Act III)" },
-                { name: "Burn Affinity", location: "Frozen Hearts — Glacial Falls Flag, foggy path" },
-                { name: "Burning Break", location: "Frozen Hearts" },
-                { name: "Burning Death", location: "The Continent (Act II) / Frozen Hearts / Flying Manor" },
-                { name: "Burning Mark", location: "Ancient Sanctuary" },
-                { name: "Burning Shots", location: "Spring Meadows / Sacred River" },
-                // C
-                { name: "Charging Alteration", location: "Flying Manor" },
-                { name: "Charging Attack", location: "The Reacher" },
-                { name: "Charging Burn", location: "Renoir's Drafts — destroyed bridge near merchant" },
-                { name: "Charging Counter", location: "The Reacher" },
-                { name: "Charging Critical", location: "Endless Tower / Renoir's Drafts" },
-                { name: "Charging Mark", location: "Endless Night Sanctuary" },
-                { name: "Charging Stun", location: "Lumiere" },
-                { name: "Charging Tint", location: "The Continent (Act II)" },
-                { name: "Charging Weakness", location: "The Reacher" },
-                { name: "Cheater", location: "The Continent (Act II — Sprong)" },
-                { name: "Clea's Life", location: "Flying Manor" },
-                { name: "Cleansing Tint", location: "Spring Meadows / The Monolith" },
-                { name: "Combo Attack I", location: "Forgotten Battlefield" },
-                { name: "Combo Attack II", location: "The Monolith (Act III)" },
-                { name: "Combo Attack III", location: "Dark Gestral Arena" },
-                { name: "Confident", location: "Stone Wave Cliffs / The Continent (multiple)" },
-                { name: "Confident Fighter", location: "Visages" },
-                { name: "Critical Break", location: "The Continent (Act II — TM)" },
-                { name: "Critical Burn", location: "Spring Meadows / Endless Night Sanctuary" },
-                { name: "Critical Moment", location: "Gestral Village" },
-                { name: "Critical Stun", location: "Sacred River" },
-                { name: "Critical Vulnerability", location: "The Continent (Act II — TM)" },
-                { name: "Critical Weakness", location: "Endless Tower" },
-                // D
-                { name: "Dead Energy I", location: "The Continent (Act II — FB)" },
-                { name: "Dead Energy II", location: "Spring Meadows" },
-                { name: "Death Bomb", location: "Yellow Harvest" },
-                { name: "Defensive Mode", location: "Stone Wave Cliffs" },
-                { name: "Dodger", location: "Spring Meadows" },
-                { name: "Double Burn", location: "Visages / Sacred River" },
-                { name: "Double Mark", location: "Sirene" },
-                { name: "Draining Cleanse", location: "The Reacher" },
-                // E
-                { name: "Effective Heal", location: "Sirene" },
-                { name: "Effective Support", location: "The Continent (Act III)" },
-                { name: "Empowering Attack", location: "Spring Meadows / Sacred River" },
-                { name: "Empowering Break", location: "Flying Manor" },
-                { name: "Empowering Dodge", location: "The Continent (Act III)" },
-                { name: "Empowering Last Stand", location: "Multiple locations" },
-                { name: "Empowering Parry", location: "Multiple locations" },
-                { name: "Empowering Tint", location: "Multiple locations" },
-                { name: "Energetic Healer", location: "Flying Manor" },
-                { name: "Energising Attack I", location: "Yellow Harvest / Renoir's Drafts" },
-                { name: "Energising Attack II", location: "Sirene / Holy River & Renoir's Drafts shops" },
-                { name: "Energising Break", location: "Flying Waters" },
-                { name: "Energising Burn", location: "Frozen Hearts" },
-                { name: "Energising Cleanse", location: "The Monolith" },
-                { name: "Energising Death", location: "The Continent (Act III) / Forgotten Battlefield" },
-                { name: "Energising Gradient", location: "Frost Évêque, northeast of Forgotten Battlefield" },
-                { name: "Energising Heal", location: "The Continent" },
-                { name: "Energising Jump", location: "Old Sanctuary" },
-                { name: "Energising Pain", location: "Stone Wave Cliffs" },
-                { name: "Energising Parry", location: "Chromatic Luster / Holy River & Renoir's Drafts" },
-                { name: "Energising Powerful", location: "Endless Tower L2 / southeast continent / Lumiere" },
-                { name: "Energising Revive", location: "Chromatic Hexga, Stonewave Cliffs Cave" },
-                { name: "Energising Rush", location: "Endless Tower" },
-                { name: "Energising Shell", location: "The Continent" },
-                { name: "Energising Shots", location: "Flying Manor" },
-                { name: "Energising Start I", location: "Behind ruined crates under arch; requires Esquie" },
-                { name: "Energising Start II", location: "Ancient Sanctuary" },
-                { name: "Energising Start III", location: "Esquie's Nest" },
-                { name: "Energising Start IV", location: "Forgotten Battlefield" },
-                { name: "Energising Stun", location: "Flying Manor" },
-                { name: "Energising Turn", location: "Sirene / Holy River & Renoir's Drafts shops" },
-                { name: "Energy Master", location: "The Continent (Act II)" },
-                { name: "Enfeebling Attack", location: "The Monolith" },
-                { name: "Enfeebling Mark", location: "Stone Wave Cliffs" },
-                { name: "Exhausting Power", location: "Multiple locations" },
-                { name: "Exposing Break", location: "Multiple locations" },
-                // F
-                { name: "Faster Than Strong", location: "Lumiere (Act III)" },
-                { name: "First Offensive", location: "Multiple locations" },
-                { name: "First Strike", location: "Stone Wave Cliffs" },
-                { name: "Fueling Break", location: "The Continent / Endless Tower Stage 7" },
-                { name: "Full Strength", location: "Multiple locations" },
-                // G
-                { name: "Glass Cannon", location: "Visages" },
-                { name: "Gradient Break", location: "Endless Night Sanctuary" },
-                { name: "Gradient Breaker", location: "Multiple locations" },
-                { name: "Gradient Fighter", location: "Lumiere (Act III)" },
-                { name: "Greater Defenceless", location: "The Monolith" },
-                { name: "Greater Powerful", location: "Sirene" },
-                { name: "Greater Powerless", location: "Endless Tower" },
-                { name: "Greater Rush", location: "Multiple locations" },
-                { name: "Greater Shell", location: "Sirene" },
-                { name: "Greater Slow", location: "Multiple locations" },
-                // H
-                { name: "Healing Boon", location: "The Reacher" },
-                { name: "Healing Counter", location: "Old Lumiere" },
-                { name: "Healing Death", location: "Old Lumiere" },
-                { name: "Healing Fire", location: "Sirene" },
-                { name: "Healing Mark", location: "Gestral Village" },
-                { name: "Healing Parry", location: "The Continent / Stone Quarry after helping Troubadour" },
-                { name: "Healing Share", location: "Visages" },
-                { name: "Healing Stun", location: "Lumiere (Act III)" },
-                { name: "Healing Tint Energy", location: "Stone Wave Cliffs" },
-                // I
-                { name: "Immaculate", location: "Visages" },
-                { name: "In Medias Res", location: "Dark Shores" },
-                { name: "Inverted Affinity", location: "Gestral Merchant, Forgotten Battlefield" },
-                // L
-                { name: "Last Stand Critical", location: "Multiple locations" },
-                { name: "Longer Burn", location: "Flying Manor" },
-                { name: "Longer Powerful", location: "Old Lumiere" },
-                { name: "Longer Rush", location: "The Continent" },
-                { name: "Longer Shell", location: "Forgotten Battlefield" },
-                // M
-                { name: "Marking Break", location: "Multiple locations" },
-                { name: "Marking Shots", location: "Flying Waters" },
-                // P
-                { name: "Painted Power", location: "Multiple locations" },
-                { name: "Painter", location: "Flying Manor" },
-                { name: "Perilous Parry", location: "Stone Wave Cliffs / Crimson Forest" },
-                { name: "Piercing Shot", location: "Ancient Sanctuary" },
-                { name: "Powered Attack", location: "Visages" },
-                { name: "Powerful Heal", location: "Multiple locations" },
-                { name: "Powerful Mark", location: "Flying Manor" },
-                { name: "Powerful Revive", location: "Multiple locations" },
-                { name: "Powerful Shield", location: "Multiple locations" },
-                { name: "Powerful Shots", location: "Gestral Village" },
-                { name: "Powerful on Shell", location: "Sirene" },
-                { name: "Pro Retreat", location: "Multiple locations" },
-                { name: "Protecting Attack", location: "Multiple locations" },
-                { name: "Protecting Death", location: "Sirene" },
-                { name: "Protecting Heal", location: "Multiple locations" },
-                { name: "Protecting Last Stand", location: "Multiple locations" },
-                { name: "Protecting Shots", location: "Flying Manor" },
-                { name: "Protecting Tint", location: "The Reacher" },
-                // Q
-                { name: "Quick Break", location: "Renoir's Drafts / Lumiere (Act III)" },
-                // R
-                { name: "Random Defense", location: "The Monolith" },
-                { name: "Recovery", location: "Multiple locations" },
-                { name: "Rejuvenating Revive", location: "Multiple locations" },
-                { name: "Revive Paradox", location: "Old Lumiere" },
-                { name: "Revive Tint Energy", location: "Forgotten Battlefield" },
-                { name: "Rewarding Mark", location: "Flying Waters / Holy River shop" },
-                { name: "Roulette", location: "Gestral Village / Flying Manor" },
-                { name: "Rush on Powerful", location: "Endless Tower / Renoir's Drafts" },
-                // S
-                { name: "SOS Power", location: "Stone Wave Cliffs" },
-                { name: "SOS Rush", location: "Multiple locations" },
-                { name: "SOS Shell", location: "Flying Waters" },
-                { name: "Second Chance", location: "The Monolith / Renoir's Drafts" },
-                { name: "Shared Care", location: "Multiple locations" },
-                { name: "Shell On Rush", location: "Multiple locations" },
-                { name: "Shield Affinity", location: "Sirene" },
-                { name: "Shielding Death", location: "Multiple locations" },
-                { name: "Shielding Tint", location: "The Continent" },
-                { name: "Shortcut", location: "Renoir's Drafts / Lumiere (Act III)" },
-                { name: "Slowing Break", location: "Flying Manor" },
-                { name: "Sniper", location: "The Reacher" },
-                { name: "Solidifying", location: "Multiple locations" },
-                { name: "Solo Fighter", location: "Renoir's Drafts" },
-                { name: "Staggering Attack", location: "Flying Waters" },
-                { name: "Stay Marked", location: "The Monolith / Flying Manor" },
-                { name: "Stun Boost", location: "Ancient Sanctuary" },
-                { name: "Survivor", location: "Multiple locations" },
-                { name: "Sweet Kill", location: "Forgotten Battlefield / Renoir's Drafts" },
-                // T
-                { name: "Tainted", location: "Multiple locations" },
-                { name: "Teamwork", location: "Yellow Harvest" },
-                { name: "The One", location: "Sunless Cliffs" },
-                { name: "Time Tint", location: "Old Lumiere / Endless Night Sanctuary" },
-                // V
-                { name: "Versatile", location: "Flying Waters / Endless Night Sanctuary" },
-                // W
-                { name: "Warming Up", location: "Multiple locations" },
-                { name: "Weakness Gain", location: "The Monolith" }
+                { name: "Accelerating Heal", location: "The Continent — beach camp north of Flying Casino", effect: "Healing an ally also applies Rush for 1 turn", cost: 5 },
+                { name: "Accelerating Last Stand", location: "Hidden Gestral Arena — 2nd challenge", effect: "Gain Rush if fighting alone", cost: 3 },
+                { name: "Accelerating Shots", location: "Flying Manor — Central Plaza merchant (89,650 Chroma, fight)", effect: "20% chance to gain Rush on Free Aim Shot", cost: 3 },
+                { name: "Accelerating Tint", location: "Endless Night Sanctuary — Night Totem merchant (80,040 Chroma)", effect: "Healing tints also apply Rush", cost: 5 },
+                { name: "Aegis Revival", location: "Spring Meadows / Renoir's Drafts — Entrance merchant past grapple (117,240 Chroma)", effect: "+1 Shield on being revived", cost: 5 },
+                { name: "Anti-Blight", location: "The Reacher — hot air balloon merchant (67,350 Chroma)", effect: "Immune to Blight", cost: 10 },
+                { name: "Anti-Burn", location: "Frozen Hearts — defeat Gargant; or Flying Manor Gargant later", effect: "Immune to Burn", cost: 15 },
+                { name: "Anti-Charm", location: "Sirene — defeat Tisseur", effect: "Immune to Charm", cost: 10 },
+                { name: "Anti-Freeze", location: "Frozen Hearts — Paint Cage 12", effect: "Immune to Freeze", cost: 15 },
+                { name: "Anti-Stun", location: "The Continent — defeat Chromatic Pétank east of Flying Casino", effect: "Immune to Stun", cost: 5 },
+                { name: "At Death's Door", location: "Stone Wave Cliffs — defeat Lampmaster", effect: "Deal 50% more damage if Health is below 10%", cost: 5 },
+                { name: "Attack Lifesteal", location: "Ancient Sanctuary — defeat Sakapatate in dark alley", effect: "Recover 15% Health on Base Attack", cost: 15 },
+                { name: "Augmented Aim", location: "Flying Waters — climb large anchor at Noco's Hut", effect: "50% increased Free Aim damage", cost: 3 },
+                { name: "Augmented Attack", location: "Spring Meadows — defeat Chromatic Lancelier", effect: "50% increased Base Attack damage", cost: 7 },
+                { name: "Augmented Counter I", location: "Flying Waters — Burgeon", effect: "35% increased Counterattack damage", cost: 3 },
+                { name: "Augmented Counter II", location: "Visages — Chromatic Ramasseur", effect: "50% increased Counterattack damage", cost: 5 },
+                { name: "Augmented Counter III", location: "Frozen Hearts — Danseuse Teacher / Lumiere Act III", effect: "75% increased Counterattack damage", cost: 7 },
+                { name: "Augmented First Strike", location: "Esquie's Nest — Francois / Renoir's Drafts", effect: "50% increased damage on the first hit. Once per battle", cost: 5 },
+                { name: "Auto Death", location: "Yellow Harvest — merchant (5,320 Chroma)", effect: "Kill self on battle start", cost: 1 },
+                { name: "Auto Regen", location: "Sirene", effect: "Apply Regen for 3 turns on battle start", cost: 10 },
+                { name: "Auto Rush", location: "Old Lumiere — Maelle/Verso side", effect: "Apply Rush for 3 turns on battle start", cost: 10 },
+                { name: "Auto Shell", location: "Stone Wave Cliffs", effect: "Apply Shell for 3 turns on battle start", cost: 10 },
+                { name: "Base Shield", location: "The Chosen Path — defeat all bosses", effect: "+1 Shield if not affected by any Shield on turn start", cost: 20 },
+                { name: "Beneficial Contamination", location: "Falling Leaves — merchant (48,200 Chroma)", effect: "+2 AP on applying a Status Effect. Once per turn", cost: 15 },
+                { name: "Break Specialist", location: "Flying Manor — merchant (81,500 Chroma, fight)", effect: "Break damage is increased by 50%, but base damage is reduced by 20%", cost: 1 },
+                { name: "Breaker", location: "Ancient Sanctuary — Ultimate Sakapatate", effect: "25% increased Break damage", cost: 10 },
+                { name: "Breaking Attack", location: "The Monolith — Clair Obscur", effect: "Base Attack can Break", cost: 10 },
+                { name: "Breaking Burn", location: "The Continent — Bourgeon (Act II)", effect: "25% increased Break damage on Burning enemies", cost: 5 },
+                { name: "Breaking Counter", location: "Stone Wave Cliffs", effect: "50% increased Break damage on Counterattack", cost: 3 },
+                { name: "Breaking Death", location: "The Continent (Act III)", effect: "Fully charge enemy's Break Bar on death", cost: 5 },
+                { name: "Breaking Shots", location: "Stone Wave Cliffs / Monoco Station", effect: "50% increased Break damage with Free Aim Shots", cost: 1 },
+                { name: "Breaking Slow", location: "The Continent (Act III)", effect: "25% increased Break damage against Slowed enemies", cost: 5 },
+                { name: "Burn Affinity", location: "Frozen Hearts — Glacial Falls Flag, foggy path", effect: "25% increased damage on Burning Targets", cost: 10 },
+                { name: "Burning Break", location: "Frozen Hearts", effect: "Apply 3 Burn stacks on Breaking a target", cost: 3 },
+                { name: "Burning Death", location: "The Continent (Act II) / Frozen Hearts / Flying Manor", effect: "Apply 3 Burn to all enemies on Death", cost: 5 },
+                { name: "Burning Mark", location: "Ancient Sanctuary", effect: "Apply Burn on hitting a Marked enemy", cost: 15 },
+                { name: "Burning Shots", location: "Spring Meadows / Sacred River", effect: "20% chance to Burn on Free Aim shot", cost: 3 },
+                { name: "Charging Alteration", location: "Flying Manor", effect: "+10% of a Gradient Charge on applying a Buff. Once per turn", cost: 10 },
+                { name: "Charging Attack", location: "The Reacher", effect: "+15% of a Gradient Charge on Base Attack", cost: 7 },
+                { name: "Charging Burn", location: "Renoir's Drafts — destroyed bridge near merchant", effect: "+20% of a Gradient Charge on applying Burn. Once per turn", cost: 10 },
+                { name: "Charging Counter", location: "The Reacher", effect: "+20% of a Gradient Charge on Counterattack", cost: 10 },
+                { name: "Charging Critical", location: "Endless Tower / Renoir's Drafts", effect: "+20% of a Gradient Charge on Critical Hit. Once per turn", cost: 10 },
+                { name: "Charging Mark", location: "Endless Night Sanctuary", effect: "+20% of a Gradient Charge on hitting a Marked target. Once per turn", cost: 10 },
+                { name: "Charging Stun", location: "Lumiere", effect: "+5% of a Gradient Charge on hitting a Stunned enemy", cost: 5 },
+                { name: "Charging Tint", location: "The Continent (Act II)", effect: "+5% of a Gradient Charge on using an item", cost: 2 },
+                { name: "Charging Weakness", location: "The Reacher", effect: "+15% of a Gradient Charge on hitting a Weakness. Once per turn", cost: 5 },
+                { name: "Cheater", location: "The Continent (Act II — Sprong)", effect: "Always play twice in a row", cost: 40 },
+                { name: "Clea's Life", location: "Flying Manor", effect: "On turn start, if no damage taken since last turn, recover 100% Health", cost: 30 },
+                { name: "Cleansing Tint", location: "Spring Meadows / The Monolith", effect: "Healing Tints also remove all Status Effects from the target", cost: 5 },
+                { name: "Combo Attack I", location: "Forgotten Battlefield", effect: "Base Attack has 1 extra hit", cost: 10 },
+                { name: "Combo Attack II", location: "The Monolith (Act III)", effect: "Base Attack has 1 extra hit", cost: 20 },
+                { name: "Combo Attack III", location: "Dark Gestral Arena", effect: "Base Attack has 1 extra hit", cost: 30 },
+                { name: "Confident", location: "Stone Wave Cliffs / The Continent (multiple)", effect: "Take 50% less damage, but can't be Healed", cost: 20 },
+                { name: "Confident Fighter", location: "Visages", effect: "30% increased damage, but can't be Healed", cost: 15 },
+                { name: "Critical Break", location: "The Continent (Act II — TM)", effect: "25% increased Break damage on Critical Hits", cost: 5 },
+                { name: "Critical Burn", location: "Spring Meadows / Endless Night Sanctuary", effect: "25% increased Critical Chance on Burning enemies", cost: 5 },
+                { name: "Critical Moment", location: "Gestral Village", effect: "50% increased Critical Chance if Health is below 30%", cost: 5 },
+                { name: "Critical Stun", location: "Sacred River", effect: "100% on Critical Chance on hitting a Stunned target", cost: 5 },
+                { name: "Critical Vulnerability", location: "The Continent (Act II — TM)", effect: "25% increased Critical Chance on Defenceless enemies", cost: 5 },
+                { name: "Critical Weakness", location: "Endless Tower", effect: "25% increased Critical Chance on Weakness", cost: 5 },
+                { name: "Dead Energy I", location: "The Continent (Act II — FB)", effect: "+3 AP on killing an enemy", cost: 2 },
+                { name: "Dead Energy II", location: "Spring Meadows", effect: "+3 AP on killing an enemy", cost: 2 },
+                { name: "Death Bomb", location: "Yellow Harvest", effect: "On Death, deal damage to all enemies", cost: 5 },
+                { name: "Defensive Mode", location: "Stone Wave Cliffs", effect: "On receiving damage, consume 1 AP to take 30% less damage, if possible", cost: 1 },
+                { name: "Dodger", location: "Spring Meadows", effect: "Gain 1 AP on Perfect Dodge. Once per turn", cost: 1 },
+                { name: "Double Burn", location: "Visages / Sacred River", effect: "On applying a Burn stack, apply a second one", cost: 30 },
+                { name: "Double Mark", location: "Sirene", effect: "Mark requires 1 more hit to be removed", cost: 20 },
+                { name: "Draining Cleanse", location: "The Reacher", effect: "Consume 1 AP to prevent Status Effects application, if possible", cost: 15 },
+                { name: "Effective Heal", location: "Sirene", effect: "Double all Heals received", cost: 30 },
+                { name: "Effective Support", location: "The Continent (Act III)", effect: "+2 AP on using an item", cost: 5 },
+                { name: "Empowering Attack", location: "Spring Meadows / Sacred River", effect: "Gain Powerful for 1 turn on Base Attack", cost: 10 },
+                { name: "Empowering Break", location: "Flying Manor", effect: "Gain Powerful on Breaking a target", cost: 3 },
+                { name: "Empowering Dodge", location: "The Continent (Act III)", effect: "5% increased damage for each consecutive successful Dodge. Can stack up to 10 times", cost: 5 },
+                { name: "Empowering Last Stand", location: "Multiple locations", effect: "Gain Powerful if fighting alone", cost: 3 },
+                { name: "Empowering Parry", location: "Multiple locations", effect: "Each successful Parry increases damage by 5% until end of the following turn. Taking any damage removes this buff", cost: 5 },
+                { name: "Empowering Tint", location: "Multiple locations", effect: "Healing Tints also apply Powerful", cost: 5 },
+                { name: "Energetic Healer", location: "Flying Manor", effect: "+2 AP on Healing an Ally. Once per turn", cost: 10 },
+                { name: "Energising Attack I", location: "Yellow Harvest / Renoir's Drafts", effect: "+1 AP on Base Attack", cost: 10 },
+                { name: "Energising Attack II", location: "Sirene / Holy River & Renoir's Drafts shops", effect: "+1 AP on Base Attack", cost: 15 },
+                { name: "Energising Break", location: "Flying Waters", effect: "+3 AP on breaking an enemy", cost: 3 },
+                { name: "Energising Burn", location: "Frozen Hearts", effect: "+1 AP on applying Burn. Once per turn", cost: 10 },
+                { name: "Energising Cleanse", location: "The Monolith", effect: "Dispel the first negative Status Effect received and gain 2 AP", cost: 10 },
+                { name: "Energising Death", location: "The Continent (Act III) / Forgotten Battlefield", effect: "On death, +4 AP to allies", cost: 5 },
+                { name: "Energising Gradient", location: "Frost Évêque, northeast of Forgotten Battlefield", effect: "+1 AP per Gradient Charge consumed", cost: 10 },
+                { name: "Energising Heal", location: "The Continent", effect: "On Healing an ally, also give 2 AP", cost: 10 },
+                { name: "Energising Jump", location: "Old Sanctuary", effect: "+1 AP on Jump Counterattack", cost: 5 },
+                { name: "Energising Pain", location: "Stone Wave Cliffs", effect: "No longer gain AP on Parry. +1 AP on getting hit", cost: 10 },
+                { name: "Energising Parry", location: "Chromatic Luster / Holy River & Renoir's Drafts", effect: "+1 AP on successful Parry", cost: 15 },
+                { name: "Energising Powerful", location: "Endless Tower L2 / southeast continent / Lumiere", effect: "Give 2 AP on applying Powerful", cost: 10 },
+                { name: "Energising Revive", location: "Chromatic Hexga, Stonewave Cliffs Cave", effect: "+3 AP to all allies when revived", cost: 5 },
+                { name: "Energising Rush", location: "Endless Tower", effect: "Give 2 AP on applying Rush", cost: 10 },
+                { name: "Energising Shell", location: "The Continent", effect: "Give 2 AP on applying Shell", cost: 10 },
+                { name: "Energising Shots", location: "Flying Manor", effect: "20% chance to gain 1 AP on Free Aim shot", cost: 10 },
+                { name: "Energising Start I", location: "Behind ruined crates under arch; requires Esquie", effect: "+1 AP on battle start", cost: 5 },
+                { name: "Energising Start II", location: "Ancient Sanctuary", effect: "+1 AP on battle start", cost: 10 },
+                { name: "Energising Start III", location: "Esquie's Nest", effect: "+1 AP on battle start", cost: 15 },
+                { name: "Energising Start IV", location: "Forgotten Battlefield", effect: "+1 AP on battle start", cost: 20 },
+                { name: "Energising Stun", location: "Flying Manor", effect: "+1 AP on hitting a Stunned target with a Skill", cost: 10 },
+                { name: "Energising Turn", location: "Sirene / Holy River & Renoir's Drafts shops", effect: "+1 AP on turn start", cost: 20 },
+                { name: "Energy Master", location: "The Continent (Act II)", effect: "Every AP gain is increased by 1", cost: 40 },
+                { name: "Enfeebling Attack", location: "The Monolith", effect: "Base Attack applies Powerless for 1 turn", cost: 10 },
+                { name: "Enfeebling Mark", location: "Stone Wave Cliffs", effect: "Marked targets deal 30% less damage", cost: 10 },
+                { name: "Exhausting Power", location: "Multiple locations", effect: "50% increased damage if Exhausted", cost: 2 },
+                { name: "Exposing Break", location: "Multiple locations", effect: "Apply Defenceless on Break", cost: 5 },
+                { name: "Faster Than Strong", location: "Lumiere (Act III)", effect: "Always play twice in a row, but deal 50% less damage", cost: 10 },
+                { name: "First Offensive", location: "Multiple locations", effect: "First hit dealt and taken deals 50% more damage", cost: 5 },
+                { name: "First Strike", location: "Stone Wave Cliffs", effect: "Play first", cost: 10 },
+                { name: "Fueling Break", location: "The Continent / Endless Tower Stage 7", effect: "Breaking a target doubles its Burn amount", cost: 5 },
+                { name: "Full Strength", location: "Multiple locations", effect: "25% increased damage on full Health", cost: 15 },
+                { name: "Glass Cannon", location: "Visages", effect: "Deal 25% more damage, but take 25% more damage", cost: 10 },
+                { name: "Gradient Break", location: "Endless Night Sanctuary", effect: "+50% of a Gradient Charge on Breaking a target", cost: 5 },
+                { name: "Gradient Breaker", location: "Multiple locations", effect: "50% chance to apply Mark when attacking a Marked target", cost: 5 },
+                { name: "Gradient Fighter", location: "Lumiere (Act III)", effect: "+25% increased damage with Gradient Attacks", cost: 5 },
+                { name: "Greater Defenceless", location: "The Monolith", effect: "+15% to Defenceless damage amplification", cost: 15 },
+                { name: "Greater Powerful", location: "Sirene", effect: "+15% to Powerful damage increase", cost: 10 },
+                { name: "Greater Powerless", location: "Endless Tower", effect: "+15% to Powerless damage reduction", cost: 15 },
+                { name: "Greater Rush", location: "Multiple locations", effect: "+25% Rush Speed increase", cost: 10 },
+                { name: "Greater Shell", location: "Sirene", effect: "+10% to Shell damage reduction", cost: 10 },
+                { name: "Greater Slow", location: "Multiple locations", effect: "+15% to Slow Speed reduction", cost: 15 },
+                { name: "Healing Boon", location: "The Reacher", effect: "Heal 15% HP on applying a buff", cost: 10 },
+                { name: "Healing Counter", location: "Old Lumiere", effect: "Recover 25% Health on Counterattack", cost: 10 },
+                { name: "Healing Death", location: "Old Lumiere", effect: "On death, the rest of the Expedition recover all Health", cost: 5 },
+                { name: "Healing Fire", location: "Sirene", effect: "Recover 25% Health when attacking a Burning target. Once per turn", cost: 10 },
+                { name: "Healing Mark", location: "Gestral Village", effect: "Recover 25% Health on hitting a Marked enemy. Once per turn", cost: 20 },
+                { name: "Healing Parry", location: "The Continent / Stone Quarry after helping Troubadour", effect: "Recover 3% Health on Parry", cost: 5 },
+                { name: "Healing Share", location: "Visages", effect: "Receive 15% of all Heals affecting other characters", cost: 5 },
+                { name: "Healing Stun", location: "Lumiere (Act III)", effect: "Recover 5% Health on hitting a Stunned target", cost: 10 },
+                { name: "Healing Tint Energy", location: "Stone Wave Cliffs", effect: "Healing Tints also give 1 AP", cost: 1 },
+                { name: "Immaculate", location: "Visages", effect: "30% increased damage until a hit is received", cost: 10 },
+                { name: "In Medias Res", location: "Dark Shores", effect: "+3 Shields on Battle Start, but max Health is halved", cost: 10 },
+                { name: "Inverted Affinity", location: "Gestral Merchant, Forgotten Battlefield", effect: "Apply Inverted on self for 3 turns on battle start. 50% increased damage while Inverted", cost: 5 },
+                { name: "Last Stand Critical", location: "Multiple locations", effect: "100% Critical Chance while fighting alone", cost: 3 },
+                { name: "Longer Burn", location: "Flying Manor", effect: "Burn duration is increased by 2", cost: 15 },
+                { name: "Longer Powerful", location: "Old Lumiere", effect: "On applying Powerful, its duration is increased by 2", cost: 10 },
+                { name: "Longer Rush", location: "The Continent", effect: "On applying Rush, its duration is increased by 2", cost: 10 },
+                { name: "Longer Shell", location: "Forgotten Battlefield", effect: "On applying Shell, its duration is increased by 2", cost: 10 },
+                { name: "Marking Break", location: "Multiple locations", effect: "Apply Mark on Break", cost: 5 },
+                { name: "Marking Shots", location: "Flying Waters", effect: "20% chance to apply Mark on Free Aim shot", cost: 3 },
+                { name: "Painted Power", location: "Multiple locations", effect: "Damage can exceed 9999", cost: 5 },
+                { name: "Painter", location: "Flying Manor", effect: "Convert all Physical damage to Void damage", cost: 10 },
+                { name: "Perilous Parry", location: "Stone Wave Cliffs / Crimson Forest", effect: "+1 AP on Parry, but damage received is doubled", cost: 5 },
+                { name: "Piercing Shot", location: "Ancient Sanctuary", effect: "25% increased Free Aim damage. Free Aim shots ignore Shields", cost: 2 },
+                { name: "Powered Attack", location: "Visages", effect: "On every damage dealt, try to consume 1 AP. If successful, increase damage by 20%", cost: 10 },
+                { name: "Powerful Heal", location: "Multiple locations", effect: "Healing an ally also applies Powerful for 1 turn", cost: 5 },
+                { name: "Powerful Mark", location: "Flying Manor", effect: "Gain Powerful on hitting a Marked enemy", cost: 5 },
+                { name: "Powerful Revive", location: "Multiple locations", effect: "Apply Powerful for 3 turns when revived", cost: 3 },
+                { name: "Powerful Shield", location: "Multiple locations", effect: "10% increased damage per Shield Point on self", cost: 5 },
+                { name: "Powerful Shots", location: "Gestral Village", effect: "20% chance to gain Powerful on Free Aim shot", cost: 3 },
+                { name: "Powerful on Shell", location: "Sirene", effect: "Apply Powerful on applying Shell", cost: 10 },
+                { name: "Pro Retreat", location: "Multiple locations", effect: "Allows Flee to be instantaneous", cost: 40 },
+                { name: "Protecting Attack", location: "Multiple locations", effect: "Gain Shell for 1 turn on Base Attack", cost: 10 },
+                { name: "Protecting Death", location: "Sirene", effect: "On death, allies gain Shell", cost: 5 },
+                { name: "Protecting Heal", location: "Multiple locations", effect: "Healing an ally also applies Shell for 1 turn", cost: 5 },
+                { name: "Protecting Last Stand", location: "Multiple locations", effect: "Gain Shell if fighting alone", cost: 3 },
+                { name: "Protecting Shots", location: "Flying Manor", effect: "20% chance to gain Shell on Free Aim shot", cost: 3 },
+                { name: "Protecting Tint", location: "The Reacher", effect: "Healing Tints also apply Shell", cost: 5 },
+                { name: "Quick Break", location: "Renoir's Drafts / Lumiere (Act III)", effect: "Play again on Breaking a target", cost: 3 },
+                { name: "Random Defense", location: "The Monolith", effect: "Damage taken is randomly multiplied by a value between 50% and 200%", cost: 5 },
+                { name: "Recovery", location: "Multiple locations", effect: "Recovers 10% Health on turn start", cost: 10 },
+                { name: "Rejuvenating Revive", location: "Multiple locations", effect: "Apply Regen for 3 turns when revived", cost: 3 },
+                { name: "Revive Paradox", location: "Old Lumiere", effect: "Play immediately when revived", cost: 5 },
+                { name: "Revive Tint Energy", location: "Forgotten Battlefield", effect: "Revive Tints also give 3 AP", cost: 10 },
+                { name: "Rewarding Mark", location: "Flying Waters / Holy River shop", effect: "+2 AP on dealing damage to a Marked target. Once per turn", cost: 5 },
+                { name: "Roulette", location: "Gestral Village / Flying Manor", effect: "Every hit has a 50% chance to deal either 50% or 200% damage", cost: 5 },
+                { name: "Rush on Powerful", location: "Endless Tower / Renoir's Drafts", effect: "Apply Rush on applying Powerful", cost: 10 },
+                { name: "SOS Power", location: "Stone Wave Cliffs", effect: "Apply Powerful when falling below 50% Health", cost: 5 },
+                { name: "SOS Rush", location: "Multiple locations", effect: "Apply Rush when falling below 50% Health", cost: 5 },
+                { name: "SOS Shell", location: "Flying Waters", effect: "Apply Shell when falling below 50% Health", cost: 5 },
+                { name: "Second Chance", location: "The Monolith / Renoir's Drafts", effect: "Revive with 100% Health. Once per battle", cost: 40 },
+                { name: "Shared Care", location: "Multiple locations", effect: "When healing an ally, also Heal self for 50% of that value", cost: 10 },
+                { name: "Shell On Rush", location: "Multiple locations", effect: "Apply Shell on applying Rush", cost: 10 },
+                { name: "Shield Affinity", location: "Sirene", effect: "30% increased damage while having Shields, but receiving any damage always removes all Shields", cost: 15 },
+                { name: "Shielding Death", location: "Multiple locations", effect: "On death, allies gain 3 Shield points", cost: 10 },
+                { name: "Shielding Tint", location: "The Continent", effect: "Healing Tints also add 2 Shields", cost: 10 },
+                { name: "Shortcut", location: "Renoir's Drafts / Lumiere (Act III)", effect: "Immediately play when falling below 30% Health. Once per battle", cost: 5 },
+                { name: "Slowing Break", location: "Flying Manor", effect: "Apply Slow on Break", cost: 5 },
+                { name: "Sniper", location: "The Reacher", effect: "First Free Aim shot each turn deals 200% increased damage and can Break", cost: 15 },
+                { name: "Solidifying", location: "Multiple locations", effect: "+2 Shields when the character's Health falls below 50%. Once per battle", cost: 10 },
+                { name: "Solo Fighter", location: "Renoir's Drafts", effect: "Deal 50% more damage if fighting alone", cost: 1 },
+                { name: "Staggering Attack", location: "Flying Waters", effect: "50% increased Break damage on Base Attack", cost: 1 },
+                { name: "Stay Marked", location: "The Monolith / Flying Manor", effect: "50% chance to apply Mark when attacking a Marked target", cost: 10 },
+                { name: "Stun Boost", location: "Ancient Sanctuary", effect: "30% increased damage on stunned targets", cost: 10 },
+                { name: "Survivor", location: "Multiple locations", effect: "Prevents death, leaving 1 HP instead. Once per battle", cost: 20 },
+                { name: "Sweet Kill", location: "Forgotten Battlefield / Renoir's Drafts", effect: "Recover 50% Health upon killing an enemy", cost: 5 },
+                { name: "Tainted", location: "Multiple locations", effect: "15% increased damage for each Status Effect on Self", cost: 3 },
+                { name: "Teamwork", location: "Yellow Harvest", effect: "10% increased damage while all allies are alive", cost: 5 },
+                { name: "The One", location: "Sunless Cliffs", effect: "Max Health is reduced to 1", cost: 1 },
+                { name: "Time Tint", location: "Old Lumiere / Endless Night Sanctuary", effect: "Energy Tints also apply Rush", cost: 10 },
+                { name: "Versatile", location: "Flying Waters / Endless Night Sanctuary", effect: "After a Free Aim shot hit, Base Attack damage is increased by 50% for one turn", cost: 5 },
+                { name: "Warming Up", location: "Multiple locations", effect: "5% increased damage per turn (can stack up to 5 times)", cost: 15 },
+                { name: "Weakness Gain", location: "The Monolith", effect: "Gives +1 AP on hitting an Enemy's weakness", cost: 3 }
             ]
         };
 
@@ -802,6 +802,7 @@
             const badges = [];
             if (type === 'missable') badges.push('<span class="badge badge-missable">Missable</span>');
             if (type === 'dlc') badges.push('<span class="badge badge-dlc">DLC</span>');
+            if (picto.cost) badges.push(`<span class="badge badge-cost" title="Lumina Points cost">${picto.cost} LP</span>`);
 
             return `
                 <div class="${classes.join(' ')}" data-name="${picto.name.toLowerCase()}" data-type="${type}" onclick="togglePicto('${picto.name.replace(/'/g, "\\'")}')">
@@ -811,6 +812,7 @@
                     <div class="picto-info">
                         <div class="picto-name">${picto.name}</div>
                         <div class="picto-meta">${picto.location}</div>
+                        ${picto.effect ? `<div class="picto-effect">${picto.effect}</div>` : ''}
                     </div>
                     <div class="picto-badges">${badges.join('')}</div>
                 </div>
@@ -850,7 +852,8 @@
             if (searchQuery) {
                 const query = searchQuery.toLowerCase();
                 if (!picto.name.toLowerCase().includes(query) &&
-                    !picto.location.toLowerCase().includes(query)) {
+                    !picto.location.toLowerCase().includes(query) &&
+                    !(picto.effect && picto.effect.toLowerCase().includes(query))) {
                     return false;
                 }
             }
